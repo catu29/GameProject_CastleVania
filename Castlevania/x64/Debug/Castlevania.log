@@ -1,0 +1,165 @@
+﻿  Candles.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\candles.cpp(47): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\candles.cpp(50): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\candles.cpp(51): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Game.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  GameEntranceScene.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(21): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(54): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(53): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(52): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  GameIntroScene.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameintroscene.cpp(13): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameintroscene.cpp(30): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameintroscene.cpp(44): warning C4305: 'argument': truncation from 'double' to 'float'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameintroscene.cpp(45): warning C4305: 'argument': truncation from 'double' to 'float'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameintroscene.cpp(46): warning C4305: 'argument': truncation from 'double' to 'float'
+  GameMenuScene.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  GameObject.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(23): warning C4018: '>=': signed/unsigned mismatch
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(51): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(52): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(53): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(54): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(60): warning C4244: 'argument': conversion from 'int' to 'FLOAT', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(228): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(245): warning C4244: 'argument': conversion from 'FLOAT' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(275): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.cpp(282): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+  Grid.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(34): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(35): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(47): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(48): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(49): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\grid.cpp(50): warning C4244: 'initializing': conversion from 'float' to 'int', possible loss of data
+  Bricks.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  InputDevice.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.cpp(32): error C2065: 'GWL_HINSTANCE': undeclared identifier
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.cpp(93): warning C4805: '==': unsafe mix of type 'HRESULT' and type 'bool' in operation
+  Item.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\item.cpp(122): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\item.cpp(140): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Scene.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  SceneManager.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Simon.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\simon.cpp(411): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  SubWeapons.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\subweapons.cpp(57): warning C4305: '=': truncation from 'double' to 'float'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\subweapons.cpp(66): warning C4305: '=': truncation from 'double' to 'float'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\subweapons.cpp(72): warning C4305: '=': truncation from 'double' to 'float'
+  Textures.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  UI.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Whip.cpp
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\whip.cpp(272): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+  Winmain.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(70): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(71): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(76): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(77): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+  Generating Code...
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\ui.cpp(60): warning C4715: 'UI::Initialize': not all control paths return a value

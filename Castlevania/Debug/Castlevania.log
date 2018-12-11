@@ -1,0 +1,27 @@
+﻿  GameEntranceScene.cpp
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\inputdevice.h(5): warning C4005: 'DIRECTINPUT_VERSION': macro redefinition
+  c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h(42): note: see previous definition of 'DIRECTINPUT_VERSION'
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(73): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(74): warning C4244: '=': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(79): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameobject.h(80): warning C4244: 'return': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(20): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(58): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(57): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(56): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(63): warning C4018: '<': signed/unsigned mismatch
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(80): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(84): warning C4244: 'argument': conversion from 'double' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(209): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(217): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(227): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(235): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(243): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(253): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(261): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(271): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(279): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(367): warning C4018: '<': signed/unsigned mismatch
+f:\for me\projects\vs projects\gameproject_castlevania\castlevania\gameentrancescene.cpp(433): warning C4018: '<': signed/unsigned mismatch
+  Castlevania.vcxproj -> F:\For Me\Projects\VS Projects\GameProject_CastleVania\Debug\Castlevania.exe

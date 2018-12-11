@@ -1,0 +1,230 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="FrameWork">
+      <UniqueIdentifier>{fa83f2da-6a87-47fa-99b7-284b2e78f0ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\GameComponents">
+      <UniqueIdentifier>{b20cb5b1-7f00-46b7-af12-142402a7ebb8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="FrameWork\GameControllers">
+      <UniqueIdentifier>{d5f10ee1-79b5-4dba-902a-8818374abd80}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scenes">
+      <UniqueIdentifier>{5c620177-2af2-4c84-af49-ae474b4739a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects">
+      <UniqueIdentifier>{2c06cd44-3c58-47cd-9f38-de9f6dd9170e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Simon">
+      <UniqueIdentifier>{cb51ebda-19f5-4e30-b028-a7b0ac97cd65}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\StaticObject">
+      <UniqueIdentifier>{cf0fb385-b2f2-41cc-9cb2-e6766f9709d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Database">
+      <UniqueIdentifier>{1786a249-6e5d-417d-a17c-cb0b7d1d9120}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Simon\Subweapons">
+      <UniqueIdentifier>{8ec2ba42-8b61-4deb-962d-b29991c6fb0b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Space Partioning">
+      <UniqueIdentifier>{ab1a1dfc-38bd-4ea5-885c-effb875788f2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="GameObjects\Enemy">
+      <UniqueIdentifier>{a87ba3f1-69d4-4fc9-9199-c0e4c0605a86}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Define.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Animations.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="GameObject.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprites.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Textures.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Scene.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="SceneManager.h">
+      <Filter>FrameWork\GameControllers</Filter>
+    </ClInclude>
+    <ClInclude Include="Graphics.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="GameMenuScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="GameIntroScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="InputDevice.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="ViewPort.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="TileMap.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="GameEntranceScene.h">
+      <Filter>Scenes</Filter>
+    </ClInclude>
+    <ClInclude Include="Simon.h">
+      <Filter>GameObjects\Simon</Filter>
+    </ClInclude>
+    <ClInclude Include="Whip.h">
+      <Filter>GameObjects\Simon</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="UI.h">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClInclude>
+    <ClInclude Include="Candles.h">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Database.h">
+      <Filter>Database</Filter>
+    </ClInclude>
+    <ClInclude Include="Grid.h">
+      <Filter>Space Partioning</Filter>
+    </ClInclude>
+    <ClInclude Include="Item.h">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Bricks.h">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="Misc.h">
+      <Filter>GameObjects</Filter>
+    </ClInclude>
+    <ClInclude Include="SubWeapons.h">
+      <Filter>GameObjects\Simon\Subweapons</Filter>
+    </ClInclude>
+    <ClInclude Include="Stairs.h">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClInclude>
+    <ClInclude Include="WalkingGhost.h">
+      <Filter>GameObjects\Enemy</Filter>
+    </ClInclude>
+    <ClInclude Include="Cells.h">
+      <Filter>Space Partioning</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Animations.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="GameObject.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprites.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Textures.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Scene.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="SceneManager.cpp">
+      <Filter>FrameWork\GameControllers</Filter>
+    </ClCompile>
+    <ClCompile Include="Graphics.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="GameMenuScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="GameIntroScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="InputDevice.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="ViewPort.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="TileMap.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Winmain.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GameEntranceScene.cpp">
+      <Filter>Scenes</Filter>
+    </ClCompile>
+    <ClCompile Include="Simon.cpp">
+      <Filter>GameObjects\Simon</Filter>
+    </ClCompile>
+    <ClCompile Include="Whip.cpp">
+      <Filter>GameObjects\Simon</Filter>
+    </ClCompile>
+    <ClCompile Include="UI.cpp">
+      <Filter>FrameWork\GameComponents</Filter>
+    </ClCompile>
+    <ClCompile Include="Candles.cpp">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Database.cpp">
+      <Filter>Database</Filter>
+    </ClCompile>
+    <ClCompile Include="Grid.cpp">
+      <Filter>Space Partioning</Filter>
+    </ClCompile>
+    <ClCompile Include="Item.cpp">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Bricks.cpp">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="Misc.cpp">
+      <Filter>GameObjects</Filter>
+    </ClCompile>
+    <ClCompile Include="SubWeapons.cpp">
+      <Filter>GameObjects\Simon\Subweapons</Filter>
+    </ClCompile>
+    <ClCompile Include="Stairs.cpp">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClCompile>
+    <ClCompile Include="WalkingGhost.cpp">
+      <Filter>GameObjects\Enemy</Filter>
+    </ClCompile>
+    <ClCompile Include="Cells.cpp">
+      <Filter>Space Partioning</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Castlevania.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+</Project>

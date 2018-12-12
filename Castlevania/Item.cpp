@@ -125,8 +125,6 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 		if (GetTickCount() - bornTime >= 3000)
 			canDestroy = true;
 
-
-
 		UpdateCells();
 	}
 }

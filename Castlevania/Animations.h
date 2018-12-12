@@ -58,4 +58,6 @@ public:
 	LPANIMATION GetAnimation(int id);
 
 	static Animations * GetInstance();
+
+	void LoadDataFromFile(LPCSTR dataPath);
 };

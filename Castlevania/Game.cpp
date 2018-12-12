@@ -32,7 +32,7 @@ bool Game::Initialize(HWND hWnd)
 	Database::GetInstance()->CreateSprite();
 	Database::GetInstance()->CreateAnimation();
 
-	SceneManager::GetInstance()->LoadScene(GAME_MENU_SCENE);
+	SceneManager::GetInstance()->LoadScene(GAME_ENTRANCE_SCENE);
 
 	return true;
 }

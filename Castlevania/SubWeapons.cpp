@@ -104,7 +104,6 @@ void SubWeapons::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 			if (IsInCameraView(ViewPort::GetInstance()) && state == STATE_LIVE)
 			{
 				position.x += vx * direction.x * dt;
-
 			}
 			else
 			{
@@ -133,8 +132,6 @@ void SubWeapons::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObject
 		float min_tx, min_ty, nx, ny;
 		FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
 
-		state = STATE_DIE;
-
 		// Collision logic with candles
 		for (UINT i = 0; i < colliableResults.size(); i++)
 		{
@@ -148,6 +145,8 @@ void SubWeapons::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObject
 					if (lc->GetState() != STATE_DIE)
 						lc->SetState(STATE_DIE);
 				}
+
+				state = STATE_DIE;
 			}
 			else if (e->GetObj()->GetTag() == TAG_SMALL_CANDLE)
 			{
@@ -157,6 +156,8 @@ void SubWeapons::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObject
 					if (lc->GetState() != STATE_DIE)
 						lc->SetState(STATE_DIE);
 				}
+
+				state = STATE_DIE;
 			}
 			else if (e->GetObj()->GetTag() == TAG_WALKING_GHOST)
 			{
@@ -166,6 +167,8 @@ void SubWeapons::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObject
 					if (wg->GetState() != STATE_DIE)
 						wg->SetState(STATE_DIE);
 				}
+
+				state = STATE_DIE;
 			}
 		}
 	}
@@ -186,7 +189,7 @@ void SubWeapons::Render(ViewPort * camera)
 		{
 			Sprites::GetInstance()->GetSprite(605)->Draw(viewPortPos.x, viewPortPos.y, 255);
 		}
-		//RenderBoundingBox(viewPortPos.x, viewPortPos.y);
+		RenderBoundingBox(viewPortPos.x, viewPortPos.y);
 	}
 }
 

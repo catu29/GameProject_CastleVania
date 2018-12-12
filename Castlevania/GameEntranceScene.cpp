@@ -1,3 +1,7 @@
+#include <fstream>
+#include <sstream>
+#include <string.h>
+
 #include "GameEntranceScene.h"
 #include "Simon.h"
 #include "Candles.h"
@@ -6,13 +10,14 @@
 #include "Item.h"
 #include "Bricks.h"
 #include "Stairs.h"
+#include "WalkingGhost.h"
+#include "SubWeapons.h"
 
 GameEntranceScene::GameEntranceScene()
 {
 	currentMap = 0;
 
 	ViewPort::GetInstance()->SetCameraPos(D3DXVECTOR3(0, 0, 0));
-	ViewPort::GetInstance()->SetCameraSize(256, 176);
 
 	listObjects = new vector<LPGAMEOBJECT>();
 	colliableObjects = new vector<LPGAMEOBJECT>;
@@ -122,15 +127,16 @@ void GameEntranceScene::Initialize()
 
 void GameEntranceScene::LoadMap()
 {
-	Grid::GetInstance()->UpdateGrid(listMap[currentMap]);
-	float cellWidth = Grid::GetInstance()->GetCellWidth();
-	float cellHeight = Grid::GetInstance()->GetCellHeight();
-
 	if (currentMap == 0)
 	{
 		listObjects->clear();
 		Simon::GetInstance()->SetPosition(0, 112);
 		Simon::GetInstance()->SetState(SIMON_STATE_IDLE);
+
+		ViewPort::GetInstance()->SetCameraSize(256, 160);
+		Grid::GetInstance()->UpdateGrid(listMap[currentMap]);
+		float cellWidth = Grid::GetInstance()->GetCellWidth();
+		float cellHeight = Grid::GetInstance()->GetCellHeight();
 
 #pragma region Load Map 1 Objects
 		LargeCandles * lCandles;
@@ -193,9 +199,14 @@ void GameEntranceScene::LoadMap()
 	}
 	else if (currentMap == 1)
 	{
-		Simon::GetInstance()->SetPosition(200, 128);
+		Simon::GetInstance()->SetPosition(0, 128);
 		Simon::GetInstance()->SetState(SIMON_STATE_IDLE);
 		Simon::GetInstance()->SetDirection(D3DXVECTOR2(1, 0));
+
+		ViewPort::GetInstance()->SetCameraSize(256, 176);
+		Grid::GetInstance()->UpdateGrid(listMap[currentMap]);
+		float cellWidth = Grid::GetInstance()->GetCellWidth();
+		float cellHeight = Grid::GetInstance()->GetCellHeight();
 
 		listObjects->clear();
 
@@ -356,70 +367,123 @@ void GameEntranceScene::LoadMap()
 		stairs->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(stairs);
 #pragma endregion
+
+#pragma region Small Candles
+		SmallCandles * sc;
+
+		for (float x = 28; x <= 544; x += 128)
+		{
+			sc = new SmallCandles(ITEM_SMALL_HEART);
+			sc->SetPosition(x, 128);
+			sc->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(sc);
+		}
+
+		for (float x = 92; x <= 604; x += 128)
+		{
+			sc = new SmallCandles(ITEM_SMALL_HEART);
+			sc->SetPosition(x, 96);
+			sc->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(sc);
+		}
 #pragma endregion
 	}
 }
 
 void GameEntranceScene::HandleDestroyedObjects()
 {
-	if (currentMap == 0)
+	for (int i = 0; i < listObjects->size(); i++)
 	{
-		for (int i = 0; i < listObjects->size(); i++)
+		if ((listObjects->at(i))->CanDestroy())
 		{
-			if ((listObjects->at(i))->CanDestroy())
+			if ((listObjects->at(i))->GetTag() == TAG_LARGE_CANDLE)
 			{
-				if ((listObjects->at(i))->GetTag() == TAG_LARGE_CANDLE)
+				Item * item;
+				switch (dynamic_cast<LargeCandles*> (listObjects->at(i))->GetDropItem())
 				{
-					Item * item;
-					switch (dynamic_cast<LargeCandles*> (listObjects->at(i))->GetDropItem())
-					{
-					case ITEM_BIG_HEART:
-						item = new Item(ITEM_BIG_HEART);
-						break;
-					case ITEM_WHIP_UPGRADE:
-						item = new Item(ITEM_WHIP_UPGRADE);
-						break;
-					case ITEM_KNIFE:
-						item = new Item(ITEM_KNIFE);
-						break;
-					default:
-						item = new Item(ITEM_SMALL_HEART);
-						break;
-					}
-					item->SetPosition(listObjects->at(i)->GetPosition().x, listObjects->at(i)->GetPosition().y);
-					item->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
-					listObjects->push_back(item);
+				case ITEM_BIG_HEART:
+					item = new Item(ITEM_BIG_HEART);
+					break;
+				case ITEM_WHIP_UPGRADE:
+					item = new Item(ITEM_WHIP_UPGRADE);
+					break;
+				case ITEM_KNIFE:
+					item = new Item(ITEM_KNIFE);
+					break;
+				default:
+					item = new Item(ITEM_SMALL_HEART);
+					break;
 				}
-				else if ((listObjects->at(i))->GetTag() == TAG_BRICK)
+				item->SetPosition(listObjects->at(i)->GetPosition().x, listObjects->at(i)->GetPosition().y);
+				item->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
+				listObjects->push_back(item);
+			}
+			else if ((listObjects->at(i))->GetTag() == TAG_SMALL_CANDLE)
+			{
+				Item * item;
+				switch (dynamic_cast<SmallCandles*> (listObjects->at(i))->GetDropItem())
 				{
-					if (dynamic_cast<Brick *>(listObjects->at(i)))
+				case ITEM_BIG_HEART:
+					item = new Item(ITEM_BIG_HEART);
+					break;
+				case ITEM_WHIP_UPGRADE:
+					item = new Item(ITEM_WHIP_UPGRADE);
+					break;
+				case ITEM_KNIFE:
+					item = new Item(ITEM_KNIFE);
+					break;
+				case ITEM_DOUBLE_SHOT:
+					item = new Item(ITEM_DOUBLE_SHOT);
+					break;
+				case ITEM_POT_ROAST:
+					item = new Item(ITEM_POT_ROAST);
+					break;
+				case ITEM_AXE:
+					item = new Item(ITEM_AXE);
+					break;
+				case ITEM_MONEY_BAG_100:
+					item = new Item(ITEM_MONEY_BAG_100);
+					break;
+				default:
+					item = new Item(ITEM_SMALL_HEART);
+					break;
+				}
+				item->SetPosition(listObjects->at(i)->GetPosition().x, listObjects->at(i)->GetPosition().y);
+				item->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
+				listObjects->push_back(item);
+			}
+			else if ((listObjects->at(i))->GetTag() == TAG_BRICK)
+			{
+				if (dynamic_cast<Brick *>(listObjects->at(i)))
+				{
+					Brick * br = dynamic_cast<Brick *>(listObjects->at(i));
+
+					if (br->GetSpecialItem() != NULL)
 					{
-						Brick * br = dynamic_cast<Brick *>(listObjects->at(i));
+						Item * item = br->GetSpecialItem();
 
-						if (br->GetSpecialItem() != NULL)
+						if (item->GetType() == ITEM_MONEY_BAG_1000)
 						{
-							Item * item = br->GetSpecialItem();
-
-							if (item->GetType() == ITEM_MONEY_BAG_1000)
+							if (currentMap == 0)
 							{
 								item->SetPosition(624, 144);
 								item->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
 							}
+						}
 
-							listObjects->push_back(item);
-						}
-						else if (br->GetType() == BRICK_TYPE_PRE_CHANGE)
-						{
-							Brick *changeBrick = new Brick(BRICK_TYPE_CHANGE);
-							changeBrick->SetPosition(714, 112);
-							changeBrick->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
-							listObjects->push_back(changeBrick);
-						}
+						listObjects->push_back(item);
+					}
+					else if (br->GetType() == BRICK_TYPE_PRE_CHANGE)
+					{
+						Brick *changeBrick = new Brick(BRICK_TYPE_CHANGE);
+						changeBrick->SetPosition(714, 112);
+						changeBrick->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
+						listObjects->push_back(changeBrick);
 					}
 				}
-
-				listObjects->erase(listObjects->begin() + i);
 			}
+
+			listObjects->erase(listObjects->begin() + i);
 		}
 	}
 }
@@ -440,15 +504,26 @@ void GameEntranceScene::Draw()
 
 void GameEntranceScene::DestroyAll()
 {
-	/*if (currentMap == 0)
+	if (currentMap == 0)
 	{
-	for (UINT i = 0; i < listObjects->size(); i++)
-	{
-	if (listObjects->at(i)->GetTag() != TAG_BRICK)
-	delete listObjects->at(i);
+		for (UINT i = 0; i < listObjects->size(); i++)
+		{
+			if (listObjects->at(i)->GetTag() == TAG_BRICK)
+				continue;
+
+			listObjects->erase(listObjects->begin() + i);
+		}
 	}
-	}*/
-	listObjects->clear();
+	else if (currentMap == 1)
+	{
+		for (UINT i = 0; i < listObjects->size(); i++)
+		{
+			if (listObjects->at(i)->GetTag() == TAG_BRICK || listObjects->at(i)->GetTag() == TAG_STAIR)
+				continue;
+
+			listObjects->erase(listObjects->begin() + i);
+		}
+	}
 }
 
 void GameEntranceScene::ChangeMap()

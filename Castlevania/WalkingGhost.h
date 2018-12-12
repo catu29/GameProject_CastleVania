@@ -12,6 +12,9 @@ public:
 	void Render(ViewPort * camera);
 	void SetState(int state);
 
+	void SetCellsOffSet(float cellWidth, float cellHeight);
+	void UpdateCells();
+
 	CollisionBox GetBoundingBox();
 };
 

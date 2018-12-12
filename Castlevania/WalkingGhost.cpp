@@ -1,5 +1,6 @@
 #include "WalkingGhost.h"
 #include "Bricks.h"
+#include "Grid.h"
 
 
 WalkingGhost::WalkingGhost()
@@ -11,6 +12,90 @@ WalkingGhost::WalkingGhost()
 WalkingGhost::~WalkingGhost()
 {
 
+}
+
+
+/*
+Calculate which cells it is living on
+*/
+void WalkingGhost::SetCellsOffSet(float cellWidth, float cellHeight)
+{
+	this->cellsOffset.clear();
+
+	CollisionBox b(this->GetBoundingBox().left, this->GetBoundingBox().top, this->GetBoundingBox().right, this->GetBoundingBox().bottom);
+
+	if (b.right < 0 || b.bottom < 0 || b.top > Grid::GetInstance()->GetGridHeight() || b.left > Grid::GetInstance()->GetGridWidth())
+		return;
+
+	if (b.left < 0)
+		b.left = 0;
+
+	if (b.top < 0)
+		b.top = 0;
+
+	if (b.right > Grid::GetInstance()->GetGridWidth())
+		b.right = Grid::GetInstance()->GetGridWidth();
+
+	if (b.bottom > Grid::GetInstance()->GetGridHeight())
+		b.bottom = Grid::GetInstance()->GetGridHeight();
+
+	int cellLeft = b.left / cellWidth;
+	int cellTop = b.top / cellHeight;
+	int cellRight = cellLeft;
+
+	if (((b.right / cellWidth) - (int)(b.right / cellWidth)) == 0)
+	{
+		cellRight = b.right / cellWidth - 1;
+	}
+	else
+	{
+		cellRight = b.right / cellWidth;
+	}
+
+	int cellBottom = cellTop;
+
+	if (((b.bottom / cellHeight) - (int)(b.bottom / cellHeight)) == 0)
+	{
+		cellBottom = b.bottom / cellHeight - 1;
+	}
+	else
+	{
+		cellBottom = b.bottom / cellHeight;
+	}
+
+	if (cellRight < cellLeft || cellBottom < cellTop)
+		return;
+
+	// Object offset in grid
+	for (UINT row = cellTop; row <= cellBottom; row++)
+	{
+		for (UINT col = cellLeft; col <= cellRight; col++)
+		{
+			cellsOffset.push_back(D3DXVECTOR2(row, col));
+			Grid::GetInstance()->Add(D3DXVECTOR2(row, col), this);
+		}
+	}
+}
+
+/*
+Update which cells it is living if it has moved
+*/
+void WalkingGhost::UpdateCells()
+{
+	// If object has not moved, stop checking
+	if (this->dx == 0 && this->dy == 0)
+		return;
+
+	vector<D3DXVECTOR2> oldList(cellsOffset); // Store old values to remove from old cells
+
+	for (UINT i = 0; i < oldList.size(); i++)
+	{
+		Grid::GetInstance()->Remove(oldList[i], this);
+	}
+
+	oldList.clear();
+
+	SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
 }
 
 void WalkingGhost::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
@@ -86,6 +171,7 @@ void WalkingGhost::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 			}
 		}
 
+		UpdateCells();
 	}
 
 }
@@ -111,6 +197,7 @@ void WalkingGhost::Render(ViewPort * camera)
 		break;
 	}
 }
+
 void WalkingGhost::SetState(int state)
 {
 	GameObject::SetState(state);

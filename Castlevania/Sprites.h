@@ -44,5 +44,7 @@ public:
 	LPSPRITE GetSprite(int id);
 
 	static Sprites * GetInstance();
+
+	void LoadDataFromFile(LPCSTR dataPath, LPDIRECT3DTEXTURE9 tex);
 };
 

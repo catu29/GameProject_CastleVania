@@ -7,7 +7,6 @@ Whip::Whip()
 {
 	LoadAnimation();	
 	state = 0;
-	frameTime = 0;
 }
 
 Whip::~Whip()
@@ -26,16 +25,10 @@ void Whip::LoadAnimation()
 {
 	AddAnimation(100); // 0 animation nomal left
 	AddAnimation(101); // 1 animation nomal left
-	AddAnimation(102); // 2 animation red left
-	AddAnimation(103); // 3 animation red left
-	AddAnimation(104); // 4 animation short left
-	AddAnimation(105); // 5 animation short left
-	AddAnimation(106); // 6 animation yellow left
-	AddAnimation(107); // 7 animation yellow left
-	AddAnimation(108); // 8 animation blue left
-	AddAnimation(109); // 9 animation blue left
-	AddAnimation(110); // 10 animation violet left
-	AddAnimation(111); // 11 animation violet left
+	AddAnimation(102); // 2 animation lightning star left
+	AddAnimation(103); // 3 animation lightning star right
+	AddAnimation(104); // 4 animation vampire killer left
+	AddAnimation(105); // 5 animation vampire killer right
 }
 
 void Whip::SetPosition(D3DXVECTOR3 _simonPosition, bool _isStanding, float dir)
@@ -43,7 +36,7 @@ void Whip::SetPosition(D3DXVECTOR3 _simonPosition, bool _isStanding, float dir)
 	this->direction.x = dir;
 	switch (type)
 	{
-	case NORMAL_WHIP: case SMALL_WHIP:
+	case NORMAL_WHIP: case LIGHTNING_STAR_WHIP:
 		if (_isStanding)
 		{
 			if (direction.x == -1)
@@ -71,7 +64,7 @@ void Whip::SetPosition(D3DXVECTOR3 _simonPosition, bool _isStanding, float dir)
 			}
 		}
 		break;
-	case YELLOW_WHIP: case RED_WHIP: case BLUE_WHIP: case VIOLET_WHIP:
+	case VAMPIRE_KILLER_WHIP:
 		if (_isStanding)
 		{
 			if (direction.x == -1)
@@ -105,43 +98,56 @@ void Whip::SetPosition(D3DXVECTOR3 _simonPosition, bool _isStanding, float dir)
 void Whip::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 {
 	GameObject::Update(dt, colliableObjects);
-	frameTime += dt;
 
-	if (frameTime >= 200)
+	vector<LPCOLLISIONEVENT> colliableEvents;
+	vector<LPCOLLISIONEVENT> colliableResults;
+
+	colliableEvents.clear(); // Make sure no events remain
+
+	if (state == WHIP_STATE_ATTACK)
+		CalPotentialCollision(colliableObjects, colliableEvents);
+
+	if (colliableEvents.size() != 0)
 	{
-		vector<LPCOLLISIONEVENT> colliableEvents;
-		vector<LPCOLLISIONEVENT> colliableResults;
+		float min_tx, min_ty, nx, ny;
+		FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
 
-		colliableEvents.clear(); // Make sure no events remain
-
-		if (state == WHIP_STATE_ATTACK)
-			CalPotentialCollision(colliableObjects, colliableEvents);
-
-		if (colliableEvents.size() != 0)
+		// Collision logic with candles
+		for (UINT i = 0; i < colliableResults.size(); i++)
 		{
-			float min_tx, min_ty, nx, ny;
-			FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
+			LPCOLLISIONEVENT e = colliableResults[i];
 
-			// Collision logic with candles
-			for (UINT i = 0; i < colliableResults.size(); i++)
+			if (e->GetObj()->GetTag() == TAG_LARGE_CANDLE)
 			{
-				LPCOLLISIONEVENT e = colliableResults[i];
-
-				if (e->GetObj()->GetTag() == TAG_LARGE_CANDLE)
+				if (dynamic_cast<LargeCandles *>(e->GetObj()))
 				{
-					if (dynamic_cast<LargeCandles *>(e->GetObj()))
-					{
-						LargeCandles *lc = dynamic_cast<LargeCandles *>(e->GetObj());
-						if (lc->GetState() != STATE_DIE)
-							lc->SetState(STATE_DIE);
-					}
+					LargeCandles *lc = dynamic_cast<LargeCandles *>(e->GetObj());
+					if (lc->GetState() != STATE_DIE)
+						lc->SetState(STATE_DIE);
+				}
+			}
+
+			else if (e->GetObj()->GetTag() == TAG_SMALL_CANDLE)
+			{
+				if (dynamic_cast<SmallCandles *>(e->GetObj()))
+				{
+					SmallCandles *sc = dynamic_cast<SmallCandles *>(e->GetObj());
+					if (sc->GetState() != STATE_DIE)
+						sc->SetState(STATE_DIE);
+				}
+			}
+
+			else if (e->GetObj()->GetTag() == TAG_WALKING_GHOST)
+			{
+				if (dynamic_cast<WalkingGhost *>(e->GetObj()))
+				{
+					WalkingGhost *wg = dynamic_cast<WalkingGhost *>(e->GetObj());
+					if (wg->GetState() != STATE_DIE)
+						wg->SetState(STATE_DIE);
 				}
 			}
 		}
-
-		frameTime = 0;
 	}
-	
 }
 
 CollisionBox Whip::GetBoundingBox()
@@ -151,7 +157,7 @@ CollisionBox Whip::GetBoundingBox()
 	switch (type)
 	{
 	case NORMAL_WHIP:
-	case SMALL_WHIP:
+	case LIGHTNING_STAR_WHIP:
 		if (this->direction.x == -1)
 		{
 			b.left = position.x;
@@ -204,17 +210,17 @@ void Whip::Render(ViewPort * camera)
 			ani = 1;
 		}
 		break;
-	case RED_WHIP:
+	case LIGHTNING_STAR_WHIP:
 		if (direction.x == -1)
 		{
 			ani = 2;
-		} 
+		}
 		else if (direction.x == 1)
 		{
 			ani = 3;
 		}
 		break;
-	case SMALL_WHIP:
+	case VAMPIRE_KILLER_WHIP:
 		if (direction.x == -1)
 		{
 			ani = 4;
@@ -222,36 +228,6 @@ void Whip::Render(ViewPort * camera)
 		else if (direction.x == 1)
 		{
 			ani = 5;
-		}
-		break;
-	case YELLOW_WHIP:
-		if (direction.x == -1)
-		{
-			ani = 6;
-		}
-		else if (direction.x == 1)
-		{
-			ani = 7;
-		}
-		break;
-	case BLUE_WHIP:
-		if (direction.x == -1)
-		{
-			ani = 8;
-		}
-		else if (direction.x == 1)
-		{
-			ani = 9;
-		}
-		break;
-	case VIOLET_WHIP:
-		if (direction.x == -1)
-		{
-			ani = 10;
-		}
-		else if (direction.x == 1)
-		{
-			ani = 11;
 		}
 		break;
 	}

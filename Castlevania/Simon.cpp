@@ -25,7 +25,7 @@ Simon::Simon()
 	direction.x = 1;
 
 	onStairLeft = onStairRight = false;
-
+	isUntouchable = false;
 	canControlKeyboard = true;
 }
 
@@ -47,57 +47,80 @@ void Simon::LoadAnimation()
 
 	AddAnimation(-48); // 2 animation idle left
 
-	AddAnimation(-47); //3 animation walking left
+	AddAnimation(-47); // 3 animation walking left
 
-	AddAnimation(-46); // 4 animation upstairs left
+	AddAnimation(-46); // 4 animation idle upstairs left
 
-	AddAnimation(-45); // 5 animation downstairs left
+	AddAnimation(-45); // 5 animation upstairs left
 
-	AddAnimation(-44); // 6 animation stand attack left
+	AddAnimation(-44); // 6 animation idle downstairs left
 
-	AddAnimation(-43); // 7 animation sit attack left
+	AddAnimation(-43); // 7 animation downstairs left
 
-	AddAnimation(-42); // 8 animation upstairs attack left
+	AddAnimation(-42); // 8 animation stand attack left
 
-	AddAnimation(-41); // 9 animation downstairs attack left
+	AddAnimation(-41); // 9 animation sit attack left
 
-	AddAnimation(-40); // 10 animation eat sp item attack left
+	AddAnimation(-40); // 10 animation upstairs attack left
+	
+	AddAnimation(-39); // 11 animation downstairs attack left
 
-					   //======================================================================
-	AddAnimation(-39); // 11 animation sit right
+	AddAnimation(-38); // 12 animation stand get special item left
 
-	AddAnimation(-38); // 12 animation idle right
+	//=========================================================
 
-	AddAnimation(-37); // 13 animation walking right
+	AddAnimation(-37); // 13 animation sit right
 
-	AddAnimation(-36); // 14 animation upstairs right
+	AddAnimation(-36); // 14 animation idle right
 
-	AddAnimation(-35); // 15 animation downstairs right
+	AddAnimation(-35); // 15 animation walking right
 
-	AddAnimation(-34); // 16 animation stand attack right
+	AddAnimation(-34); // 16 animation idle upstairs right
 
-	AddAnimation(-33); // 17 animation sit attack right
+	AddAnimation(-33); // 17 animation upstairs right
 
-	AddAnimation(-32); // 18 animation upstairs attack right
+	AddAnimation(-32); // 18 animation idle downstairs right
 
-	AddAnimation(-31); // 19 animation downstairs attack right
+	AddAnimation(-31); // 19 animation downstairs right
 
-	AddAnimation(-30); // 20 animation eat sp item attack right
+	AddAnimation(-30); // 20 animation stand attack right
+
+	AddAnimation(-29); // 21 animation sit attack right
+
+	AddAnimation(-28); // 22 animation upstairs attack right
+
+	AddAnimation(-27); // 23 animation downstairs attack right
+
+	AddAnimation(-26); // 24 animation eat sp item attack right
+
+	AddAnimation(-25); // 25 animation hitted left
+
+	AddAnimation(-24); // 26 animation hitted right
 }
 
 void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 {
 	GameObject::Update(dt, colliableObjects);
+	Whip::GetInstance()->SetPosition(this->position, !isSit, direction.x);
+
 	if (onStairLeft == false && onStairRight == false)
 	{
 		vy += SIMON_GRAVITY;
 	}
 
+	if (GetTickCount() - touchableTime >= 2000)
+	{
+		isUntouchable = false;
+	}
+
 	switch (state)
 	{
 	case SIMON_STATE_ATTACK:
-		Whip::GetInstance()->SetPosition(this->position, !isSit, direction.x);
-		Whip::GetInstance()->SetState(WHIP_STATE_ATTACK);
+		if (GetTickCount() - stateTime >= 200)
+		{
+			Whip::GetInstance()->SetState(WHIP_STATE_ATTACK);
+			Whip::GetInstance()->HandleCollision(dt, colliableObjects);
+		}
 
 		if (GetTickCount() - stateTime >= 400)
 		{
@@ -110,12 +133,12 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 				state = SIMON_STATE_IDLE;
 			}
 		}
-		Whip::GetInstance()->HandleCollision(dt, colliableObjects);
 		break;
 	case SIMON_STATE_THROW:
-		SubWeapons::GetInstance()->SetPosition(this->position, !isSit, direction.x);
-		SubWeapons::GetInstance()->SetState(STATE_LIVE);
-
+		if (GetTickCount() - stateTime >= 100)
+		{
+			SubWeapons::GetInstance()->SetState(STATE_LIVE);
+		}
 		if (GetTickCount() - stateTime >= 400)
 		{
 			if (isSit)
@@ -127,9 +150,16 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 				state = SIMON_STATE_IDLE;
 			}
 		}
-		SubWeapons::GetInstance()->Update(dt, colliableObjects);
+		break;
+	case SIMON_STATE_GET_ITEM:
+		if (GetTickCount() - stateTime >= 800)
+		{
+			SetState(SIMON_STATE_IDLE);
+			canControlKeyboard = true;
+		}
 		break;
 	}
+	SubWeapons::GetInstance()->Update(dt, colliableObjects);
 
 	vector<LPCOLLISIONEVENT> colliableEvents;
 	vector<LPCOLLISIONEVENT> colliableResults;
@@ -147,8 +177,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	else
 	{
 		float min_tx, min_ty, nx, ny;
-
-		// @Danh: Which events did you filter?
 		FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
 
 		position.x += min_tx * dx;// + nx * 0.4f;
@@ -158,7 +186,30 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 		{
 			LPCOLLISIONEVENT e = colliableResults[i];
 
-			if (e->GetObj()->GetTag() == TAG_LARGE_CANDLE)
+			if (colliableResults[i]->GetObj()->GetTag() == TAG_WALKING_GHOST && (colliableResults[i]->Get_nx() != 0 || colliableResults[i]->Get_ny() != 0))
+			{
+				if (!isUntouchable && colliableResults[i]->GetObj()->GetState() == STATE_LIVE)
+				{
+					vx = colliableResults[i]->Get_nx() * 0.05f;
+					vy = -SIMON_JUMP_SPEED_Y;
+
+					touchableTime = GetTickCount();
+					state = SIMON_STATE_HITTED;
+
+					isUntouchable = true;
+
+					D3DXVECTOR3 infor = Simon::GetInstance()->GetInfo();
+					infor.x -= 2;
+					Simon::GetInstance()->SetInfo(infor);
+				}
+				else
+				{
+					position.x += dx;
+					position.y += dy;
+				}
+			}
+
+			else if (colliableResults[i]->GetObj()->GetTag() == TAG_LARGE_CANDLE || colliableResults[i]->GetObj()->GetTag() == TAG_SMALL_CANDLE)
 			{
 				position.x += dx;
 
@@ -168,8 +219,6 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 
 			else if (e->GetObj()->GetTag() == TAG_ITEM)
 			{
-				// @Danh: simon did not hit Whip ?? Maybe they are filtered???
-
 				if (dynamic_cast<Item *>(colliableResults[i]->GetObj()))
 				{
 					if (e->Get_ny() != 0)
@@ -181,11 +230,14 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 					Item * item = dynamic_cast<Item *>(colliableResults[i]->GetObj());
 					switch (item->GetType())
 					{
+					case ITEM_SMALL_HEART:
+						info.y += 1;
+						break;
 					case ITEM_BIG_HEART:
 						info.y += 5;
 						break;
 					case ITEM_WHIP_UPGRADE:
-						// @Danh: Simon vs Whip Item ???
+						SetState(SIMON_STATE_GET_ITEM);
 						Whip::GetInstance()->SetType((Whip::GetInstance()->GetType() + 1) > 5 ? Whip::GetInstance()->GetType() : Whip::GetInstance()->GetType() + 1);
 						totalWhip = Whip::GetInstance()->GetType();
 						break;
@@ -254,6 +306,8 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 					}
 					else if (br->GetType() == BRICK_TYPE_PRE_CHANGE) // For entrance scene - map 0
 					{
+						SceneManager::GetInstance()->GetCurrentScene()->DestroyAll();
+
 						if (e->Get_ny() < 0)
 						{
 							position.y += dy;
@@ -351,11 +405,25 @@ void Simon::HandleMove()
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_RIGHTARROW))
 			{
-				SetState(SIMON_STATE_WALKING_RIGHT);
+				if (isSit)
+				{
+					direction.x = 1;
+				}
+				else
+				{
+					SetState(SIMON_STATE_WALKING_RIGHT);
+				}
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_LEFTARROW))
 			{
-				SetState(SIMON_STATE_WALKING_LEFT);
+				if (isSit)
+				{
+					direction.x = -1;
+				}
+				else
+				{
+					SetState(SIMON_STATE_WALKING_LEFT);
+				}
 			}
 			else
 			{
@@ -428,7 +496,7 @@ void Simon::HandleEvent(bool isKeyDown)
 	{
 		if (isKeyDown)
 		{
-			if (InputDevice::GetInstance()->IsKeyDown(DIK_LCONTROL))
+			if (InputDevice::GetInstance()->IsKeyDown(DIK_LCONTROL) && state != SIMON_STATE_ATTACK)
 			{
 				SetState(SIMON_STATE_ATTACK);
 			}
@@ -437,10 +505,13 @@ void Simon::HandleEvent(bool isKeyDown)
 			{
 				SetState(SIMON_STATE_JUMP);
 			}
-			else if (InputDevice::GetInstance()->IsKeyDown(DIK_LSHIFT) && totalSubWeapon != -1)
+			else if (InputDevice::GetInstance()->IsKeyDown(DIK_LSHIFT) &&
+				totalSubWeapon != -1 &&
+				info.y > 0 &&
+				state != SIMON_STATE_THROW &&
+				SubWeapons::GetInstance()->GetState() == STATE_DIE)
 			{
 				SetState(SIMON_STATE_THROW);
-				SubWeapons::GetInstance()->SetState(STATE_LIVE);
 			}
 		}
 	}
@@ -485,7 +556,7 @@ void Simon::Render(ViewPort * camera)
 		}
 		break;
 
-	case SIMON_STATE_ATTACK: case SIMON_STATE_THROW:
+	case SIMON_STATE_ATTACK:
 		if (onStairRight == true)
 		{
 			ani = SIMON_ANI_UPSTAIRS_ATTACK_RIGHT;
@@ -518,7 +589,31 @@ void Simon::Render(ViewPort * camera)
 		}
 
 		Whip::GetInstance()->Render(camera);
+		break;
 
+	case SIMON_STATE_THROW:
+		if (!isSit)
+		{
+			if (direction.x > 0)
+			{
+				ani = SIMON_ANI_STAND_ATTACK_RIGHT;
+			}
+			else if (direction.x < 0)
+			{
+				ani = SIMON_ANI_STAND_ATTACK_LEFT;
+			}
+		}
+		else
+		{
+			if (direction.x > 0)
+			{
+				ani = SIMON_ANI_SIT_ATTACK_RIGHT;
+			}
+			else if (direction.x < 0)
+			{
+				ani = SIMON_ANI_SIT_ATTACK_LEFT;
+			}
+		}
 		break;
 
 	case SIMON_STATE_SIT:
@@ -542,6 +637,29 @@ void Simon::Render(ViewPort * camera)
 			ani = SIMON_ANI_SIT_LEFT;
 		}
 		break;
+
+	case SIMON_STATE_HITTED:
+		if (direction.x > 0)
+		{
+			ani = SIMON_ANI_HITTED_RIGHT;
+		}
+		else if (direction.x < 0)
+		{
+			ani = SIMON_ANI_HITTED_LEFT;
+		}
+		break;
+
+	case SIMON_STATE_GET_ITEM:
+		if (direction.x > 0)
+		{
+			ani = SIMON_ANI_STAND_GET_SPITEM_RIGHT;
+		}
+		else if (direction.x < 0)
+		{
+			ani = SIMON_ANI_STAND_GET_SPITEM_LEFT;
+		}
+		break;
+
 	case SIMON_STATE_UPSTAIR_RIGHT:
 		ani = SIMON_ANI_UPSTAIRS_RIGHT;
 		break;
@@ -598,6 +716,11 @@ void Simon::Render(ViewPort * camera)
 	}
 
 	animations[ani]->Render(viewPortPos.x, viewPortPos.y);
+	
+	if (SubWeapons::GetInstance()->GetState() == STATE_LIVE)
+	{
+		SubWeapons::GetInstance()->Render(camera);
+	}
 
 	RenderBoundingBox(bboxPos.x, bboxPos.y);
 }
@@ -703,6 +826,14 @@ void Simon::SetState(int state)
 		onStairLeft = true;
 		onStairRight = false;
 		break;
+
+	case SIMON_STATE_THROW:
+		info.y--;
+		if (info.y >= 0)
+		{
+			SubWeapons::GetInstance()->SetPosition(this->position, !isSit, direction.x);
+		}
+		break;
 	}
 
 }
@@ -745,7 +876,7 @@ CollisionBox Simon::GetBoundingBox()
 			break;
 		}
 	case SIMON_STATE_UPSTAIR_RIGHT:
-		b.left = position.x - 6.0f;
+		b.left = position.x;
 		b.right = b.left + SIMON_BBOX_WIDTH;
 		b.top = position.y;
 		b.bottom = b.top + SIMON_STAND_BBOX_HEIGHT;

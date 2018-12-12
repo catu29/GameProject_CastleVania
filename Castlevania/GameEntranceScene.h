@@ -1,7 +1,7 @@
 #pragma once
 #include "Scene.h"
 
-
+#define MOVING_OBJECT_DATA_SOURCE		"Resource\\Object\\MovingObjectData.txt"
 
 
 class GameEntranceScene : public Scene

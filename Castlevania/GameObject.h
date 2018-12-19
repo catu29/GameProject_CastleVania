@@ -23,6 +23,7 @@ using namespace std;
 #define TAG_STAIR			5
 #define TAG_SMALL_CANDLE	6
 #define TAG_WALKING_GHOST	7
+#define TAG_GATE			8
 
 
 class CollisionEvent;
@@ -79,6 +80,11 @@ public:
 	int Get_nx() { return this->nx; }
 	int Get_ny() { return this->ny; }
 	LPGAMEOBJECT GetObj() { return this->obj; }
+
+	static bool Compare(const LPCOLLISIONEVENT &a, LPCOLLISIONEVENT &b)
+	{
+		return a->t < b->t;
+	}
 };
 
 
@@ -138,7 +144,7 @@ public:
 	bool AABB(CollisionBox box1, CollisionBox box2);
 	void SweptAABB(CollisionBox mBox, CollisionBox sBox, float &t, float &nx, float &ny);
 	LPCOLLISIONEVENT SweptAABBEx(LPGAMEOBJECT coliableObject);
-	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
+	//void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
 	void FilterCollision(vector<LPCOLLISIONEVENT> &coliableEvents, vector<LPCOLLISIONEVENT> &coliableResult, float &min_tx, float &min_ty, float &nx, float &ny);
 
 	GameObject();

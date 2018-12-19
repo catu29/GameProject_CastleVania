@@ -129,6 +129,30 @@ void Item::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	}
 }
 
+void Item::CalPotentialCollision(vector<LPGAMEOBJECT>* colliableObjects, vector<LPCOLLISIONEVENT>& colliableEvents)
+{
+	for (UINT i = 0; i < colliableObjects->size(); i++)
+	{
+		if (colliableObjects->at(i)->GetTag() == TAG_LARGE_CANDLE || colliableObjects->at(i)->GetTag() == TAG_SMALL_CANDLE
+			|| colliableObjects->at(i)->GetTag() == TAG_WALKING_GHOST || colliableObjects->at(i)->GetTag() == TAG_ITEM
+			|| colliableObjects->at(i)->GetTag() == TAG_STAIR)
+		{
+			continue;
+		}
+		else
+		{
+			LPCOLLISIONEVENT e = SweptAABBEx(colliableObjects->at(i));
+
+			if (e->Get_t() >= 0.0f && e->Get_t() < 1.0f)
+				colliableEvents.push_back(e);
+			else
+				delete e;
+		}
+	}
+
+	std::sort(colliableEvents.begin(), colliableEvents.end());
+}
+
 void Item::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 {
 	vector<LPCOLLISIONEVENT> colliableEvents;
@@ -142,14 +166,6 @@ void Item::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	}
 	else
 	{
-		for (UINT i = 0; i < colliableEvents.size(); i++)
-		{
-			if (dynamic_cast<Item *>(colliableEvents[i]->GetObj()))
-			{
-				colliableEvents.erase(colliableEvents.begin() + i);
-			}
-		}
-
 		vector<LPCOLLISIONEVENT> colliableResults;
 		float min_tx, min_ty, nx, ny;
 

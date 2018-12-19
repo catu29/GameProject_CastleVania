@@ -135,6 +135,9 @@
     <ClInclude Include="Cells.h">
       <Filter>Space Partioning</Filter>
     </ClInclude>
+    <ClInclude Include="Gate.h">
+      <Filter>GameObjects\StaticObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Animations.cpp">
@@ -220,6 +223,9 @@
     </ClCompile>
     <ClCompile Include="Cells.cpp">
       <Filter>Space Partioning</Filter>
+    </ClCompile>
+    <ClCompile Include="Gate.cpp">
+      <Filter>GameObjects\StaticObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

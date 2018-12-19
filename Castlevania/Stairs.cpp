@@ -89,5 +89,5 @@ void Stair::Render(ViewPort * camera)
 
 CollisionBox Stair::GetBoundingBox()
 {
-	return CollisionBox(position.x, position.y, position.x + 16, position.y + 8);
+	return CollisionBox(position.x, position.y, position.x + 16, position.y + 4);
 }

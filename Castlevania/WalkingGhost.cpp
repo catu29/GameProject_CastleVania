@@ -14,6 +14,45 @@ WalkingGhost::~WalkingGhost()
 
 }
 
+void WalkingGhost::CalPotentialCollision(vector<LPGAMEOBJECT>* colliableObjects, vector<LPCOLLISIONEVENT>& colliableEvents)
+{
+	for (UINT i = 0; i < colliableObjects->size(); i++)
+	{
+		if (colliableObjects->at(i)->GetTag() == TAG_LARGE_CANDLE || colliableObjects->at(i)->GetTag() == TAG_SMALL_CANDLE
+			|| colliableObjects->at(i)->GetTag() == TAG_WALKING_GHOST || colliableObjects->at(i)->GetTag() == TAG_ITEM
+			|| colliableObjects->at(i)->GetTag() == TAG_STAIR)
+		{
+			continue;
+		}
+		else
+		{
+			LPCOLLISIONEVENT e = new CollisionEvent(-1, 0, 0, colliableObjects->at(i));
+
+			if (this->vx == 0 && this->vy == 0)
+			{
+				CollisionBox b1 = this->GetBoundingBox();
+
+				CollisionBox b2 = colliableObjects->at(i)->GetBoundingBox();
+
+				if (AABB(b1, b2))
+				{
+					e = new CollisionEvent(0, -(this->direction.x), -(this->direction.y), colliableObjects->at(i));
+				}
+			}
+			else
+			{
+				e = SweptAABBEx(colliableObjects->at(i));
+			}
+
+			if (e->Get_t() >= 0.0f && e->Get_t() < 1.0f)
+				colliableEvents.push_back(e);
+			else
+				delete e;
+		}
+	}
+
+	std::sort(colliableEvents.begin(), colliableEvents.end());
+}
 
 /*
 Calculate which cells it is living on
@@ -103,6 +142,8 @@ void WalkingGhost::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	GameObject::Update(dt, colliableObjects);
 
 	vy += 0.1f;
+	vx = 0.05f * direction.x;
+
 	vector<LPCOLLISIONEVENT> colliableEvents;
 	vector<LPCOLLISIONEVENT> colliableResults;
 
@@ -122,54 +163,29 @@ void WalkingGhost::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 			float min_tx, min_ty, nx, ny;
 			FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
 
+			position.y += dy * min_ty + ny * 0.4f;
+			position.x += dx * min_tx;
+
+			if (ny != 0)
+				vy = 0;
+
 			for (UINT i = 0; i < colliableResults.size(); i++)
 			{
-				LPCOLLISIONEVENT e = colliableResults[i];
-
-				if (e->GetObj()->GetTag() == TAG_LARGE_CANDLE)
-				{
-					if (e->Get_ny() != 0)
-					{
-						position.y += dy;
-					}
-					position.x += dx;
-				}
-				else if (e->GetObj()->GetTag() == TAG_ITEM)
-				{
-					if (e->Get_ny() != 0)
-					{
-						position.y += dy;
-					}
-					position.x += dx;
-				}
-				else if (e->GetObj()->GetTag() == TAG_BRICK)
+				if (dynamic_cast<Brick *>(colliableResults[i]->GetObj()))
 				{
 					Brick * br = dynamic_cast<Brick *>(colliableResults[i]->GetObj());
-					if (br->GetType() == BRICK_TYPE_GROUND)
-					{
-						if (e->Get_ny() != 0)
-						{
-							vy = 0;
-							vx = 0.05f * direction.x;
-						}
-						position.x += dx;
-					}
-					else if (br->GetType() == BRICK_TYPE_WALL)
-					{
-						if (e->Get_nx() != 0)
-						{
-							direction.x *= -1;
-							vy = 0;
-							vx = 0.05f * direction.x;
-						}
-						position.x += dx;
-					}
-					
-				}
-				
 
+					if (br->GetType() == BRICK_TYPE_WALL)
+					{
+						direction.x *= -1;
+						vx *= direction.x;
+					}
+				}
 			}
 		}
+
+		for (UINT i = 0; i < colliableEvents.size(); i++)
+			delete colliableEvents[i];
 
 		UpdateCells();
 	}
@@ -178,7 +194,7 @@ void WalkingGhost::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 void WalkingGhost::Render(ViewPort * camera)
 {
 	D3DXVECTOR3 viewPortPos = camera->ConvertPosInViewPort(this->position);
-
+	
 	switch (state)
 	{
 	case STATE_LIVE:
@@ -196,6 +212,14 @@ void WalkingGhost::Render(ViewPort * camera)
 		Animations::GetInstance()->GetAnimation(502)->Render(viewPortPos.x + 8, viewPortPos.y + 11);
 		break;
 	}
+
+	CollisionBox b = this->GetBoundingBox();
+	D3DXVECTOR3 p = this->position;
+	p.x = b.left;
+	p.y = b.top;
+	p = camera->ConvertPosInViewPort(p);
+
+	RenderBoundingBox(p.x, p.y);
 }
 
 void WalkingGhost::SetState(int state)
@@ -208,9 +232,9 @@ CollisionBox WalkingGhost::GetBoundingBox()
 	CollisionBox b(0, 0, 0, 0);
 
 	b.left = position.x;
-	b.top = position.y;
-	b.right = position.x + 16;
-	b.bottom = position.y + 32;
+	b.top = position.y - 1;
+	b.right = b.left + 16;
+	b.bottom = b.top + 32;
 
 	return b;
 }

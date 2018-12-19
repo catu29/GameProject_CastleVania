@@ -32,7 +32,14 @@ void GameObject::SetState(int state)
 
 	if (state == STATE_DIE)
 	{
-		stateTime = 0;
+		if (tag == TAG_ITEM || tag == TAG_GATE)
+		{
+			stateTime = 0;
+		}
+		else
+		{
+			stateTime = GetTickCount();
+		}
 
 		for (int i = 0; i < cellsOffset.size(); i++)
 		{
@@ -221,38 +228,6 @@ LPCOLLISIONEVENT GameObject::SweptAABBEx(LPGAMEOBJECT colliableObject)
 	return e;
 }
 
-void GameObject::CalPotentialCollision(vector<LPGAMEOBJECT>* colliableObjects, vector<LPCOLLISIONEVENT>& colliableEvents)
-{
-	for (UINT i = 0; i < colliableObjects->size(); i++)
-	{
-		LPCOLLISIONEVENT e = new CollisionEvent(-1, 0, 0, colliableObjects->at(i));
-
-		if (this->vx == 0 && this->vy == 0)
-		{
-			CollisionBox b1 = this->GetBoundingBox();
-
-			CollisionBox b2 = colliableObjects->at(i)->GetBoundingBox();
-
-			if (AABB(b1, b2))
-			{
-				e = new CollisionEvent(0, -(this->direction.x), -(this->direction.y), colliableObjects->at(i));
-			}
-		}
-		else
-		{
-			e = SweptAABBEx(colliableObjects->at(i));
-		}
-
-		if (e->Get_t() >= 0.0f && e->Get_t() <= 1.0f)
-			colliableEvents.push_back(e);
-		else
-			delete e;
-	}
-
-	std::sort(colliableEvents.begin(), colliableEvents.end());
-
-}
-
 void GameObject::FilterCollision(vector<LPCOLLISIONEVENT>&colliableEvents, vector<LPCOLLISIONEVENT>&colliableResult, float &min_tx, float &min_ty, float &nx, float &ny)
 {
 	min_tx = 1.0f;
@@ -282,8 +257,10 @@ void GameObject::FilterCollision(vector<LPCOLLISIONEVENT>&colliableEvents, vecto
 		}
 	}
 
-	if (min_ix > -1) colliableResult.push_back(colliableEvents[min_ix]);
-	if (min_iy > -1) colliableResult.push_back(colliableEvents[min_iy]);
+	if (min_ix > -1) 
+		colliableResult.push_back(colliableEvents[min_ix]);
+	if (min_iy > -1) 
+		colliableResult.push_back(colliableEvents[min_iy]);
 }
 
 void GameObject::AddAnimation(int aniId)

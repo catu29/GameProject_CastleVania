@@ -15,7 +15,13 @@
 
 GameEntranceScene::GameEntranceScene()
 {
-	currentMap = 0;
+	currentMap = 1;
+
+	camBoundLeft = 0;
+	level = 0;
+	isPassingGate = false;
+
+	gate1 = gate2 = NULL;
 
 	ViewPort::GetInstance()->SetCameraPos(D3DXVECTOR3(0, 0, 0));
 
@@ -51,9 +57,22 @@ void GameEntranceScene::Update(DWORD dt)
 	if (isChangeMap)
 	{
 		ChangeMap();
+		gameTime += 0;
 	}
+	else if (isPassingGate)
+	{
+		gameTime += 0;
 
-	gameTime += dt;
+		if (level == 1)
+		{
+			HandlePassGate(gate1);
+		}
+	}
+	else
+	{
+		gameTime += dt;
+	}
+	
 	if (gameTime >= 1000)
 	{
 		ui->Update(
@@ -78,31 +97,29 @@ void GameEntranceScene::Update(DWORD dt)
 	{
 		pos.x = Simon::GetInstance()->GetPosition().x - ViewPort::GetInstance()->GetCameraWidth() / 2.0f;
 
-		double mapWidth = (float)listMap[currentMap]->GetTileWidth() * (float)listMap[currentMap]->GetColumns() - 8.0f;
-
-		if (Simon::GetInstance()->GetPosition().x >= (mapWidth - ViewPort::GetInstance()->GetCameraWidth() / 2.0f))
+		if (Simon::GetInstance()->GetPosition().x >= (camBoundRight - ViewPort::GetInstance()->GetCameraWidth() / 2.0f))
 		{
-			pos.x = mapWidth - (float)ViewPort::GetInstance()->GetCameraWidth();
+			pos.x = camBoundRight - (float)ViewPort::GetInstance()->GetCameraWidth();
 
-			if (Simon::GetInstance()->GetPosition().x >= mapWidth - 24.0f)
+			if (Simon::GetInstance()->GetPosition().x >= camBoundRight)
 			{
-				Simon::GetInstance()->SetPosition(mapWidth - 24.0f, Simon::GetInstance()->GetPosition().y);
+				Simon::GetInstance()->SetPosition(camBoundRight - 16.0f, Simon::GetInstance()->GetPosition().y);
 			}
 		}
 	}
 	else
 	{
-		pos.x = 0;
-		if (Simon::GetInstance()->GetPosition().x <= 0)
+		pos.x = camBoundLeft;
+
+		if (Simon::GetInstance()->GetPosition().x <= camBoundLeft)
 		{
-			Simon::GetInstance()->SetPosition(0, Simon::GetInstance()->GetPosition().y);
+			Simon::GetInstance()->SetPosition(camBoundLeft, Simon::GetInstance()->GetPosition().y);
 		}
 	}
 
 	ViewPort::GetInstance()->SetCameraPos(pos); // Set camera postion 	
 
-												// Handle objects that be destroyed after colliding
-	HandleDestroyedObjects();
+	HandleDestroyedObjects(); // Handle objects that be destroyed after colliding
 
 	Grid::GetInstance()->Update(colliableObjects); // Update coliable object list following camera	
 }
@@ -127,6 +144,8 @@ void GameEntranceScene::Initialize()
 
 void GameEntranceScene::LoadMap()
 {
+	camBoundRight = listMap[currentMap]->GetColumns() * listMap[currentMap]->GetTileWidth();
+
 	if (currentMap == 0)
 	{
 		listObjects->clear();
@@ -199,22 +218,56 @@ void GameEntranceScene::LoadMap()
 	}
 	else if (currentMap == 1)
 	{
-		Simon::GetInstance()->SetPosition(0, 128);
 		Simon::GetInstance()->SetState(SIMON_STATE_IDLE);
 		Simon::GetInstance()->SetDirection(D3DXVECTOR2(1, 0));
 
 		ViewPort::GetInstance()->SetCameraSize(256, 176);
 		Grid::GetInstance()->UpdateGrid(listMap[currentMap]);
-		float cellWidth = Grid::GetInstance()->GetCellWidth();
-		float cellHeight = Grid::GetInstance()->GetCellHeight();
+		
 
 		listObjects->clear();
 
-#pragma region Load Map 2 Objects
+		if (level == 0)
+		{
+			camBoundLeft = 0;
+			camBoundRight = 1536;
+
+			Simon::GetInstance()->SetPosition(0, 128);
+
+			LoadObjects(0);			
+
+			gate1 = new Gate();
+			gate1->SetPosition(1528, 16);
+			gate1->SetDirection(D3DXVECTOR2(1, 0));
+			gate1->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
+		}
+		else if (level == 1)
+		{
+			camBoundLeft = 1536;
+			camBoundRight = 2048;
+
+			Simon::GetInstance()->SetPosition(1500, 128);
+
+			LoadObjects(1);
+
+			gate2 = new Gate();
+			gate2->SetPosition(2056, 16);
+			gate2->SetDirection(D3DXVECTOR2(1, 0));
+			gate2->SetCellsOffSet(Grid::GetInstance()->GetCellWidth(), Grid::GetInstance()->GetCellHeight());
+		}
+	}
+}
+
+void GameEntranceScene::LoadObjects(int lv)
+{
+	float cellWidth = Grid::GetInstance()->GetCellWidth();
+	float cellHeight = Grid::GetInstance()->GetCellHeight();
+
+	if (lv == 0) // Load objects in level 0
+	{
 		Brick * bricks;
 
-#pragma region Ground bricks
-		for (int x = 0; x < 1582; x += 16)
+		for (int x = 0; x < 1528; x += 16)
 		{
 			bricks = new Brick(BRICK_TYPE_GROUND);
 			bricks->SetPosition(x, 160);
@@ -222,16 +275,6 @@ void GameEntranceScene::LoadMap()
 			listObjects->push_back(bricks);
 		}
 
-		for (int x = 1600; x < 1792; x += 16)
-		{
-			bricks = new Brick(BRICK_TYPE_GROUND);
-			bricks->SetPosition(x, 160);
-			bricks->SetCellsOffSet(cellWidth, cellHeight);
-			listObjects->push_back(bricks);
-		}
-#pragma endregion
-
-#pragma region Middle ground bricks
 		for (int x = 688; x < 736; x += 16)
 		{
 			bricks = new Brick(BRICK_TYPE_GROUND);
@@ -248,16 +291,6 @@ void GameEntranceScene::LoadMap()
 			listObjects->push_back(bricks);
 		}
 
-		for (int x = 1664; x < 1712; x += 16)
-		{
-			bricks = new Brick(BRICK_TYPE_GROUND);
-			bricks->SetPosition(x, 96);
-			bricks->SetCellsOffSet(cellWidth, cellHeight);
-			listObjects->push_back(bricks);
-		}
-#pragma endregion
-
-#pragma region High ground bricks
 		for (int x = 752; x < 912; x += 16)
 		{
 			bricks = new Brick(BRICK_TYPE_GROUND);
@@ -266,16 +299,26 @@ void GameEntranceScene::LoadMap()
 			listObjects->push_back(bricks);
 		}
 
-		for (int x = 1392; x < 1664; x += 16)
+		for (int x = 1392; x < 1528; x += 16)
 		{
 			bricks = new Brick(BRICK_TYPE_GROUND);
 			bricks->SetPosition(x, 64);
 			bricks->SetCellsOffSet(cellWidth, cellHeight);
 			listObjects->push_back(bricks);
 		}
-#pragma endregion
 
-#pragma region Wall bricks
+		bricks = new Brick(BRICK_TYPE_ITEM);
+		bricks->SetPosition(1008, 96);
+		bricks->SetSpecialItemType(ITEM_MONEY_BAG_400);
+		bricks->SetMoving();
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1528, 0);
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
 		for (int y = 80; y < 160; y += 16)
 		{
 			bricks = new Brick(BRICK_TYPE_WALL);
@@ -284,20 +327,142 @@ void GameEntranceScene::LoadMap()
 			listObjects->push_back(bricks);
 		}
 
-		for (int y = 80; y < 160; y += 16)
+		Stair * stairs;
+
+		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
+		stairs->SetPosition(616, 156);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
+		stairs->SetPosition(712, 92);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
+		stairs->SetPosition(1288, 156);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_BOTTOM_LEFT);
+		stairs->SetPosition(936, 92);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
+		stairs->SetPosition(680, 92);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
+		stairs->SetPosition(744, 60);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
+		stairs->SetPosition(1384, 60);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_TOP_LEFT);
+		stairs->SetPosition(904, 62);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_END_UP);
+		stairs->SetPosition(680, 61);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_END_UP);
+		stairs->SetPosition(744, 30);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_END_UP);
+		stairs->SetPosition(904, 30);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		stairs = new Stair(STAIR_TYPE_END_UP);
+		stairs->SetPosition(1384, 30);
+		stairs->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(stairs);
+
+		WalkingGhost * wg;
+
+		wg = new WalkingGhost();
+		wg->SetPosition(250, 100);
+		wg->SetDirection(D3DXVECTOR2(-1, 0));
+		wg->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(wg);
+	}
+	else if (lv == 1) // Load objects in level 1
+	{
+		Brick * bricks;
+
+		for (int x = 1536; x < 1582; x += 16)
 		{
-			bricks = new Brick(BRICK_TYPE_WALL);
-			bricks->SetPosition(1792, y);
+			bricks = new Brick(BRICK_TYPE_GROUND);
+			bricks->SetPosition(x, 160);
 			bricks->SetCellsOffSet(cellWidth, cellHeight);
 			listObjects->push_back(bricks);
 		}
-#pragma endregion
 
-#pragma region Moving bricks
-		bricks = new Brick(BRICK_TYPE_ITEM);
-		bricks->SetPosition(1008, 96);
-		bricks->SetSpecialItemType(ITEM_MONEY_BAG_400);
-		bricks->SetMoving();
+		for (int x = 1600; x < 1792; x += 16)
+		{
+			bricks = new Brick(BRICK_TYPE_GROUND);
+			bricks->SetPosition(x, 160);
+			bricks->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(bricks);
+		}
+
+		for (int x = 1664; x < 1712; x += 16)
+		{
+			bricks = new Brick(BRICK_TYPE_GROUND);
+			bricks->SetPosition(x, 96);
+			bricks->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(bricks);
+		}
+
+		for (int x = 1536; x < 1664; x += 16)
+		{
+			bricks = new Brick(BRICK_TYPE_GROUND);
+			bricks->SetPosition(x, 64);
+			bricks->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(bricks);
+		}
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1528, 0);
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
+		for (int y = 80; y < 160; y += 16)
+		{
+			bricks = new Brick(BRICK_TYPE_WALL);
+			bricks->SetPosition(1528, y);
+			bricks->SetCellsOffSet(cellWidth, cellHeight);
+			listObjects->push_back(bricks);
+		}
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1792, 96);
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1792, 112);
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1792, 160);
+		bricks->SetCellsOffSet(cellWidth, cellHeight);
+		listObjects->push_back(bricks);
+
+		bricks = new Brick(BRICK_TYPE_WALL);
+		bricks->SetPosition(1580, 128);
 		bricks->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(bricks);
 
@@ -313,80 +478,73 @@ void GameEntranceScene::LoadMap()
 		bricks->SetMoving();
 		bricks->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(bricks);
-#pragma endregion
 
-#pragma region On-stair Bricks
-		// Arrange from left to right
 		Stair * stairs;
-		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
-		stairs->SetPosition(616, 152);
-		stairs->SetCellsOffSet(cellWidth, cellHeight);
-		listObjects->push_back(stairs);
 
-		/*float y = 144;
-		for (float x = 632; x < 688; x += 8)
-		{
-		stairs = new Stair(STAIR_TYPE_MID_RIGHT);
-		stairs->SetPosition(x, y);
-		listObjects->push_back(stairs);
-		y -= 8;
-		}*/
-
-		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
-		stairs->SetPosition(680, 88);
-		stairs->SetCellsOffSet(cellWidth, cellHeight);
-		listObjects->push_back(stairs);
-
-		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
-		stairs->SetPosition(712, 88);
-		stairs->SetCellsOffSet(cellWidth, cellHeight);
-		listObjects->push_back(stairs);
-
-		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
-		stairs->SetPosition(744, 56);
+		stairs = new Stair(STAIR_TYPE_BOTTOM_LEFT);
+		stairs->SetPosition(1768, 156);
 		stairs->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(stairs);
 
 		stairs = new Stair(STAIR_TYPE_TOP_LEFT);
-		stairs->SetPosition(904, 56);
+		stairs->SetPosition(1704, 92);
 		stairs->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(stairs);
 
-		stairs = new Stair(STAIR_TYPE_BOTTOM_LEFT);
-		stairs->SetPosition(936, 88);
+		stairs = new Stair(STAIR_TYPE_END_UP);
+		stairs->SetPosition(1704, 61);
 		stairs->SetCellsOffSet(cellWidth, cellHeight);
 		listObjects->push_back(stairs);
+	}
+}
 
-		stairs = new Stair(STAIR_TYPE_BOTTOM_RIGHT);
-		stairs->SetPosition(1288, 152);
-		stairs->SetCellsOffSet(cellWidth, cellHeight);
-		listObjects->push_back(stairs);
+void GameEntranceScene::HandlePassGate(Gate * &gate)
+{
+	float vx, vy;
+	Simon::GetInstance()->GetSpeed(vx, vy);
+	D3DXVECTOR3 pos = ViewPort::GetInstance()->GetCameraPos();
 
-		stairs = new Stair(STAIR_TYPE_TOP_RIGHT);
-		stairs->SetPosition(1384, 56);
-		stairs->SetCellsOffSet(cellWidth, cellHeight);
-		listObjects->push_back(stairs);
-#pragma endregion
-
-#pragma region Small Candles
-		SmallCandles * sc;
-
-		for (float x = 28; x <= 544; x += 128)
+	if (vx == 0)
+	{
+		if (gate->IsOpening())
 		{
-			sc = new SmallCandles(ITEM_SMALL_HEART);
-			sc->SetPosition(x, 128);
-			sc->SetCellsOffSet(cellWidth, cellHeight);
-			listObjects->push_back(sc);
+			if (pos.x < (Simon::GetInstance()->GetPosition().x - ViewPort::GetInstance()->GetCameraWidth() / 2.0f))
+			{
+				pos.x += 0.04f;
+				ViewPort::GetInstance()->SetCameraPos(pos);
+			}
+			else
+			{
+				gate->SetState(GATE_STATE_OPEN);
+				camBoundLeft = gate->GetPosition().x + 8.0f;
+			}
 		}
-
-		for (float x = 92; x <= 604; x += 128)
+		else
 		{
-			sc = new SmallCandles(ITEM_SMALL_HEART);
-			sc->SetPosition(x, 96);
-			sc->SetCellsOffSet(cellWidth, cellHeight);
-			listObjects->push_back(sc);
+			if(pos.x < camBoundLeft)
+			{
+				pos.x += 0.04f;
+				ViewPort::GetInstance()->SetCameraPos(pos);
+			}
+			else
+			{
+				pos.x = camBoundLeft;
+				ViewPort::GetInstance()->SetCameraPos(pos);
+
+				Simon::GetInstance()->SetState(SIMON_STATE_IDLE);
+				Simon::GetInstance()->SetControlKB(true);
+			}
 		}
-#pragma endregion
+	}
+	else
+	{
+		if (Simon::GetInstance()->GetPosition().x > gate->GetPosition().x + 48.0f)
+		{
+			Simon::GetInstance()->SetSpeed(0, 0);
+
+			gate->SetState(GATE_STATE_CLOSE);
+			gate->SetOpen(false);
+		}
 	}
 }
 
@@ -494,7 +652,7 @@ void GameEntranceScene::Draw()
 
 	listMap[currentMap]->Draw(ViewPort::GetInstance());
 
-	for (int i = 0; i < listObjects->size(); i++)
+	for (int i = 0; i < colliableObjects->size(); i++)
 	{
 		listObjects->at(i)->Render(ViewPort::GetInstance());
 	}
@@ -528,7 +686,7 @@ void GameEntranceScene::DestroyAll()
 
 void GameEntranceScene::ChangeMap()
 {
-	DestroyAll();
+	listObjects->clear();
 
 	if (currentMap == 2)
 		currentMap--;

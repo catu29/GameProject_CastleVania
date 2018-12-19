@@ -31,6 +31,7 @@ public:
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects);
 	void Render(ViewPort * camera);
 
+	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
 	void HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects);
 
 	CollisionBox GetBoundingBox();

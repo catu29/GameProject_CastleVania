@@ -8,6 +8,7 @@
 #include "Candles.h"
 #include "Bricks.h"
 #include "Stairs.h"
+#include "Gate.h"
 #include "SceneManager.h"
 
 Simon * Simon::_instance = NULL;
@@ -24,7 +25,9 @@ Simon::Simon()
 	SetState(SIMON_STATE_IDLE);
 	direction.x = 1;
 
-	onStairLeft = onStairRight = false;
+	isPassingGate = false;
+	checkOnStairLeft = checkOnStairRight = false;
+	isOnStairLeft = isOnStairRight = false;
 	isUntouchable = false;
 	canControlKeyboard = true;
 }
@@ -103,9 +106,14 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	GameObject::Update(dt, colliableObjects);
 	Whip::GetInstance()->SetPosition(this->position, !isSit, direction.x);
 
-	if (onStairLeft == false && onStairRight == false)
+	if (isOnStairLeft == false && isOnStairRight == false && isPassingGate == false)
 	{
 		vy += SIMON_GRAVITY;
+	}
+
+	if (isPassingGate == true)
+	{
+		position.x += dx;
 	}
 
 	if (GetTickCount() - touchableTime >= 2000)
@@ -116,7 +124,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	switch (state)
 	{
 	case SIMON_STATE_ATTACK:
-		if (GetTickCount() - stateTime >= 200)
+		if (GetTickCount() - stateTime >= 300)
 		{
 			Whip::GetInstance()->SetState(WHIP_STATE_ATTACK);
 			Whip::GetInstance()->HandleCollision(dt, colliableObjects);
@@ -171,16 +179,13 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 
 	if (colliableEvents.size() == 0)
 	{
-		position.x += dx;
 		position.y += dy;
+		position.x += dx;
 	}
 	else
 	{
 		float min_tx, min_ty, nx, ny;
 		FilterCollision(colliableEvents, colliableResults, min_tx, min_ty, nx, ny);
-
-		position.x += min_tx * dx;// + nx * 0.4f;
-		position.y += min_ty * dy + ny * 0.4f;
 
 		for (UINT i = 0; i < colliableResults.size(); i++)
 		{
@@ -198,9 +203,7 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 
 					isUntouchable = true;
 
-					D3DXVECTOR3 infor = Simon::GetInstance()->GetInfo();
-					infor.x -= 2;
-					Simon::GetInstance()->SetInfo(infor);
+					info.x -= 2;
 				}
 				else
 				{
@@ -209,24 +212,10 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 				}
 			}
 
-			else if (colliableResults[i]->GetObj()->GetTag() == TAG_LARGE_CANDLE || colliableResults[i]->GetObj()->GetTag() == TAG_SMALL_CANDLE)
-			{
-				position.x += dx;
-
-				if (e->Get_ny() != 0)
-					position.y += dy;
-			}
-
 			else if (e->GetObj()->GetTag() == TAG_ITEM)
 			{
 				if (dynamic_cast<Item *>(colliableResults[i]->GetObj()))
 				{
-					if (e->Get_ny() != 0)
-					{
-						position.y += dy;
-					}
-					position.x += dx;
-
 					Item * item = dynamic_cast<Item *>(colliableResults[i]->GetObj());
 					switch (item->GetType())
 					{
@@ -260,32 +249,51 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 					Brick * br = dynamic_cast<Brick *>(colliableResults[i]->GetObj());
 					if (br->GetType() == BRICK_TYPE_GROUND)
 					{
-						if (state == SIMON_STATE_DOWNSTAIR_LEFT || state == SIMON_STATE_DOWNSTAIR_RIGHT)
+						if (isOnStairLeft == true || isOnStairRight == true)
 						{
-							onStairLeft = false;
-							onStairRight = false;
-							vy = 0;
-							position.y += dy * min_ty + ny * 0.4f;
+							position.x += dx;
+							position.y += dy;
 						}
+						else
+						{					
+							if (e->Get_ny() < 0)
+							{
+								isOnStairLeft = isOnStairRight = false;
+								vy = 0;
+
+								if (state == SIMON_STATE_ATTACK || state == SIMON_STATE_THROW)
+									vx = 0;
+							}
+							else if (e->Get_ny() > 0)
+							{
+								position.y += dy;
+							}
+
+							if (e->Get_nx() != 0)
+							{
+								vx = 0;
+							}
+
+							position.x += min_tx * dx; //+ nx * 0.4f;
+							position.y += min_ty * dy + ny * 0.4f;
+						}
+					}
+					else if (br->GetType() == BRICK_TYPE_ITEM)
+					{
+						position.x += dx;
 
 						if (e->Get_ny() < 0)
 						{
+							isOnStairLeft = isOnStairRight = false;
 							vy = 0;
 
 							if (state == SIMON_STATE_ATTACK || state == SIMON_STATE_THROW)
 								vx = 0;
 						}
-						else if (e->Get_ny() > 0)
-						{
-							position.x += dx;
-							position.y += dy;
-						}
-					}
-					else if (br->GetType() == BRICK_TYPE_ITEM)
-					{
+
 						if (!(br->CanMove()))
 						{
-							if (vx != 0.02f && vx != -0.02f)
+							if (vx != 0.01f && vx != -0.01f)
 							{
 								Item * i = new Item(br->GetSpecialItemType());
 								br->SetSpecialItem(i);
@@ -296,28 +304,23 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 					}
 					else if (br->GetType() == BRICK_TYPE_WALL)
 					{
-						if (e->Get_nx() != 0)
-						{
-							vx = 0;
-							position.x += min_tx * dx + nx * 0.4f;
-						}
+						vx = 0;
+						position.x += dx * min_tx + nx * 0.4f;
 
-						position.y += dy;
+						if (e->Get_ny() < 0)
+						{
+							vy = 0;
+							position.y += min_ty * dy + ny * 0.4f;
+						}
 					}
 					else if (br->GetType() == BRICK_TYPE_PRE_CHANGE) // For entrance scene - map 0
 					{
 						SceneManager::GetInstance()->GetCurrentScene()->DestroyAll();
 
-						if (e->Get_ny() < 0)
-						{
-							position.y += dy;
-						}
-
 						if (e->Get_nx() < 0 || br->GetDirection().x == -1)
 						{
 							state = SIMON_STATE_WALKING_RIGHT;
 							vx = 0.01f;
-							position.x += dx;
 							canControlKeyboard = false;
 							br->SetState(STATE_DIE);
 						}
@@ -337,49 +340,25 @@ void Simon::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 				}
 			}
 
-			else if (e->GetObj()->GetTag() == TAG_STAIR)
+			else if (e->GetObj()->GetTag() == TAG_GATE)
 			{
-				if (dynamic_cast<Stair *>(e->GetObj()))
+				if (dynamic_cast<Gate *>(e->GetObj()))
 				{
-					Stair * stair = dynamic_cast<Stair *>(e->GetObj());
+					Gate * gate = dynamic_cast<Gate *>(e->GetObj());
 
-					if (onStairLeft == false && onStairRight == false)
+					if (direction.x * gate->GetDirection().x > 0)
 					{
-						position.x += dx;
-						if (e->Get_ny() < 0)
-							position.y += dy;
-					}
+						canControlKeyboard = false;
+						vx = 0;
+						isPassingGate = true;
 
-					if (stair->GetType() == STAIR_TYPE_BOTTOM_LEFT)
-					{
-						if (state == SIMON_STATE_DOWNSTAIR_RIGHT)
-						{
-							onStairLeft = false;
-						}
-						else
-						{
-							if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
-							{
-								onStairLeft = true;
-								onStairRight = false;
-							}
-						}
+						gate->SetOpen(true);
+						SceneManager::GetInstance()->GetCurrentScene()->SetPassingGate(true);
 					}
-					else if (stair->GetType() == STAIR_TYPE_BOTTOM_RIGHT)
+					else
 					{
-						/*if (state == SIMON_STATE_DOWNSTAIR_LEFT)
-						{
-						onStairRight = false;
-						}
-						else*/
-						{
-							if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
-							{
-								onStairLeft = false;
-								onStairRight = true;
-								position.x = stair->GetPosition().x - 8;
-							}
-						}
+						canControlKeyboard = true;
+						gate->SetState(STATE_DIE);
 					}
 				}
 			}
@@ -396,16 +375,67 @@ void Simon::HandleMove()
 	{
 		if (vy == 0)
 		{
-			if (InputDevice::GetInstance()->IsKeyDown(DIK_DOWNARROW))
+			if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
 			{
-				if (onStairLeft == false && onStairRight == false)
+				if (checkOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_LEFT);
+					checkOnStairLeft = false;
+				}
+				else if (checkOnStairRight == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_RIGHT);
+					checkOnStairRight = false;
+				}
+				else if (isOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_LEFT);
+				}
+				else if (isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_RIGHT);
+				}
+				else
+				{
+					SetState(SIMON_STATE_IDLE);
+				}
+			}
+			else if (InputDevice::GetInstance()->IsKeyDown(DIK_DOWNARROW))
+			{
+				if (checkOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
+					checkOnStairLeft = false;
+				}
+				else if (checkOnStairRight == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_LEFT);
+					checkOnStairRight = false;
+				}
+				else if (isOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
+				}
+				else if (isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_LEFT);
+				}
+				else
 				{
 					SetState(SIMON_STATE_SIT);
 				}
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_RIGHTARROW))
 			{
-				if (isSit)
+				if (isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_RIGHT);
+				}
+				else if (isOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
+				}
+				else if (isSit)
 				{
 					direction.x = 1;
 				}
@@ -416,7 +446,15 @@ void Simon::HandleMove()
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_LEFTARROW))
 			{
-				if (isSit)
+				if (isOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_UPSTAIR_LEFT);
+				}
+				else if (isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_LEFT);
+				}
+				else if (isSit)
 				{
 					direction.x = -1;
 				}
@@ -427,59 +465,61 @@ void Simon::HandleMove()
 			}
 			else
 			{
-				SetState(SIMON_STATE_IDLE);
+				if (isOnStairLeft == true || isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_IDLE_ON_STAIR);
+				}
+				
+				if (isOnStairLeft == false && isOnStairRight == false)
+				{
+					SetState(SIMON_STATE_IDLE);
+				}
 			}
 		}
-		else if (onStairLeft == true || onStairRight == true)
+		else if (isOnStairLeft == true || isOnStairRight == true)
 		{
 			if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
 			{
-				if (onStairLeft == true && onStairRight == false)
+				if (isOnStairLeft == true && isOnStairRight == false)
 				{
 					SetState(SIMON_STATE_UPSTAIR_LEFT);
 				}
-				else if (onStairRight == true && onStairLeft == false)
+				else if (isOnStairRight == true && isOnStairLeft == false)
 				{
 					SetState(SIMON_STATE_UPSTAIR_RIGHT);
 				}
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_DOWNARROW))
 			{
-				if (onStairLeft == true && onStairRight == false)
+				if (isOnStairLeft == true && isOnStairRight == false)
 				{
 					SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
 				}
-				else if (onStairRight == true && onStairLeft == false)
+				else if (isOnStairRight == true && isOnStairLeft == false)
 				{
 					SetState(SIMON_STATE_DOWNSTAIR_LEFT);
 				}
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_RIGHTARROW))
 			{
-				if (state == SIMON_STATE_IDLE_ON_STAIR)
+				if (isOnStairRight == true)
 				{
-					if (direction.y > 0)
-					{
-						SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
-					}
-					else
-					{
-						SetState(SIMON_STATE_UPSTAIR_RIGHT);
-					}
+					SetState(SIMON_STATE_UPSTAIR_RIGHT);
+				}
+				else if (isOnStairLeft == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_RIGHT);
 				}
 			}
 			else if (InputDevice::GetInstance()->IsKeyDown(DIK_LEFTARROW))
 			{
-				if (state == SIMON_STATE_IDLE_ON_STAIR)
+				if (isOnStairLeft == true)
 				{
-					if (direction.y > 0)
-					{
-						SetState(SIMON_STATE_DOWNSTAIR_LEFT);
-					}
-					else
-					{
-						SetState(SIMON_STATE_UPSTAIR_LEFT);
-					}
+					SetState(SIMON_STATE_UPSTAIR_LEFT);
+				}
+				else if (isOnStairRight == true)
+				{
+					SetState(SIMON_STATE_DOWNSTAIR_LEFT);
 				}
 			}
 			else
@@ -500,7 +540,7 @@ void Simon::HandleEvent(bool isKeyDown)
 			{
 				SetState(SIMON_STATE_ATTACK);
 			}
-			else if (InputDevice::GetInstance()->IsKeyDown(DIK_SPACE) && onStairLeft == false && onStairRight == false
+			else if (InputDevice::GetInstance()->IsKeyDown(DIK_SPACE) && isOnStairLeft == false && isOnStairRight == false
 				&& state != SIMON_STATE_JUMP && state != SIMON_STATE_SIT && state != SIMON_STATE_ATTACK && state != SIMON_STATE_THROW)
 			{
 				SetState(SIMON_STATE_JUMP);
@@ -557,13 +597,27 @@ void Simon::Render(ViewPort * camera)
 		break;
 
 	case SIMON_STATE_ATTACK:
-		if (onStairRight == true)
+		if (isOnStairRight == true)
 		{
-			ani = SIMON_ANI_UPSTAIRS_ATTACK_RIGHT;
+			if (direction.y < 0)
+			{
+				ani = SIMON_ANI_UPSTAIRS_ATTACK_RIGHT;
+			}
+			else if (direction.y > 0)
+			{
+				ani = SIMON_ANI_DOWNSTAIRS_ATTACK_LEFT;
+			}
 		}
-		else if (onStairLeft == true)
+		else if (isOnStairLeft == true)
 		{
-			ani = SIMON_ANI_UPSTAIRS_ATTACK_LEFT;
+			if (direction.y < 0)
+			{
+				ani = SIMON_ANI_UPSTAIRS_ATTACK_LEFT;
+			}
+			else if (direction.y > 0)
+			{
+				ani = SIMON_ANI_DOWNSTAIRS_ATTACK_RIGHT;
+			}
 		}
 		else if (!isSit)
 		{
@@ -592,7 +646,15 @@ void Simon::Render(ViewPort * camera)
 		break;
 
 	case SIMON_STATE_THROW:
-		if (!isSit)
+		if (isOnStairRight == true)
+		{
+			ani = SIMON_ANI_UPSTAIRS_ATTACK_RIGHT;
+		}
+		else if (isOnStairLeft == true)
+		{
+			ani = SIMON_ANI_UPSTAIRS_ATTACK_LEFT;
+		}
+		else if (!isSit)
 		{
 			if (direction.x > 0)
 			{
@@ -735,6 +797,7 @@ void Simon::SetState(int state)
 		vy = 0;
 		direction.y = 0;
 		isSit = false;
+		isPassingGate = false;
 		break;
 
 	case SIMON_STATE_SIT:
@@ -742,12 +805,13 @@ void Simon::SetState(int state)
 		vy = 0;
 		direction.y = 0;
 		isSit = true;
-		onStairLeft = false;
-		onStairRight = false;
+		isOnStairLeft = false;
+		isOnStairRight = false;
 		break;
 
 	case SIMON_STATE_JUMP:
 		vy = -SIMON_JUMP_SPEED_Y;
+		//direction.y = -1;
 		isSit = false;
 		break;
 
@@ -757,7 +821,7 @@ void Simon::SetState(int state)
 		vx = SIMON_WALKING_SPEED;
 		vy = 0;
 		isSit = false;
-		onStairLeft = onStairRight = false;
+		isOnStairLeft = isOnStairRight = false;
 		break;
 
 	case SIMON_STATE_WALKING_LEFT:
@@ -766,7 +830,7 @@ void Simon::SetState(int state)
 		vx = -SIMON_WALKING_SPEED;
 		vy = 0;
 		isSit = false;
-		onStairLeft = onStairRight = false;
+		isOnStairLeft = isOnStairRight = false;
 		break;
 
 	case SIMON_STATE_IDLE_TURNBACK:
@@ -788,8 +852,8 @@ void Simon::SetState(int state)
 		vy = -SIMON_ONSTAIR_SPEED;
 
 		isSit = false;
-		onStairRight = true;
-		onStairLeft = false;
+		isOnStairRight = true;
+		isOnStairLeft = false;
 		break;
 
 	case SIMON_STATE_DOWNSTAIR_RIGHT:
@@ -800,19 +864,20 @@ void Simon::SetState(int state)
 		vy = SIMON_ONSTAIR_SPEED;
 
 		isSit = false;
-		onStairRight = true;
-		onStairLeft = false;
+		isOnStairRight = false;
+		isOnStairLeft = true;
 		break;
 
 	case SIMON_STATE_UPSTAIR_LEFT:
 		direction.x = -1;
 		direction.y = -1;
 
-		vx = vy = -SIMON_ONSTAIR_SPEED;
+		vx = -SIMON_ONSTAIR_SPEED;
+		vy = -SIMON_ONSTAIR_SPEED;
 
 		isSit = false;
-		onStairLeft = true;
-		onStairRight = false;
+		isOnStairLeft = true;
+		isOnStairRight = false;
 		break;
 
 	case SIMON_STATE_DOWNSTAIR_LEFT:
@@ -823,8 +888,8 @@ void Simon::SetState(int state)
 		vy = SIMON_ONSTAIR_SPEED;
 
 		isSit = false;
-		onStairLeft = true;
-		onStairRight = false;
+		isOnStairLeft = false;
+		isOnStairRight = true;
 		break;
 
 	case SIMON_STATE_THROW:
@@ -883,15 +948,7 @@ CollisionBox Simon::GetBoundingBox()
 		break;
 
 	case SIMON_STATE_IDLE_ON_STAIR:
-		if (direction.x > 0)
-		{
-			b.left = position.x - 6.0f;
-		}
-		else
-		{
-			b.left = position.x;
-		}
-
+		b.left = position.x;
 		b.right = b.left + SIMON_BBOX_WIDTH;
 		b.top = position.y;
 		b.bottom = b.top + SIMON_STAND_BBOX_HEIGHT;
@@ -899,9 +956,9 @@ CollisionBox Simon::GetBoundingBox()
 
 	default:
 		if (direction.x == 1)
-			b.left = position.x + 6.0f;
+			b.left = position.x + 7.0f;
 		else
-			b.left = position.x + 4.0f;
+			b.left = position.x + 5.0f;
 
 		b.top = position.y;
 		b.right = b.left + SIMON_BBOX_WIDTH;
@@ -909,4 +966,172 @@ CollisionBox Simon::GetBoundingBox()
 	}
 
 	return b;
+}
+
+void Simon::CalPotentialCollision(vector<LPGAMEOBJECT>* colliableObjects, vector<LPCOLLISIONEVENT>& colliableEvents)
+{
+	for (UINT i = 0; i < colliableObjects->size(); i++)
+	{
+		if (colliableObjects->at(i)->GetTag() == TAG_LARGE_CANDLE || colliableObjects->at(i)->GetTag() == TAG_SMALL_CANDLE)
+		{
+			continue;
+		}
+		else if (colliableObjects->at(i)->GetTag() == TAG_ITEM)
+		{
+			if (AABB(this->GetBoundingBox(), colliableObjects->at(i)->GetBoundingBox()))
+			{
+				LPCOLLISIONEVENT e = new CollisionEvent(0, -this->direction.x, -this->direction.y, colliableObjects->at(i));
+				colliableEvents.push_back(e);
+			}
+		}
+		else if (colliableObjects->at(i)->GetTag() == TAG_STAIR)
+		{
+			if (AABB(this->GetBoundingBox(), colliableObjects->at(i)->GetBoundingBox()))
+			{
+				if (dynamic_cast<Stair *>(colliableObjects->at(i)))
+				{
+					Stair * stair = dynamic_cast<Stair *>(colliableObjects->at(i));
+
+					if (stair->GetType() == STAIR_TYPE_BOTTOM_LEFT)
+					{
+						if (state == SIMON_STATE_DOWNSTAIR_RIGHT)
+						{
+							checkOnStairLeft = false;
+							isOnStairLeft = false;
+							SetState(SIMON_STATE_IDLE);
+						}
+						else
+						{
+							if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
+							{
+								checkOnStairLeft = true;
+								checkOnStairRight = false;
+
+								if (direction.x == 1)
+								{
+									position.x = stair->GetPosition().x - 3.0f;
+								}
+								else if (direction.x == -1)
+								{
+									position.x = stair->GetPosition().x - 2.0f;
+								}
+							}
+						}
+					}
+					//======
+					else if (stair->GetType() == STAIR_TYPE_BOTTOM_RIGHT)
+					{
+						if (state == SIMON_STATE_DOWNSTAIR_LEFT)
+						{
+							isOnStairRight = false;
+							checkOnStairRight = false;
+							SetState(SIMON_STATE_IDLE);
+						}
+						else
+						{
+							if (InputDevice::GetInstance()->IsKeyDown(DIK_UPARROW))
+							{
+								checkOnStairLeft = false;
+								checkOnStairRight = true;
+								if (direction.x == 1)
+								{
+									position.x = stair->GetPosition().x - 3.0f;
+								}
+								else if (direction.x == -1)
+								{
+									position.x = stair->GetPosition().x - 2.0f;
+								}
+							}
+						}
+					}
+					//======
+					else if (stair->GetType() == STAIR_TYPE_END_UP)
+					{
+						if (state == SIMON_STATE_UPSTAIR_RIGHT || state == SIMON_STATE_UPSTAIR_LEFT)
+						{
+							if (direction.y < 0)
+							{
+								isOnStairRight = false;
+								isOnStairLeft = false;
+
+								checkOnStairRight = false;
+								checkOnStairLeft = false;
+
+								SetState(SIMON_STATE_IDLE);
+							}
+						}
+					}
+					//======
+					else if (stair->GetType() == STAIR_TYPE_TOP_RIGHT)
+					{
+						if (isOnStairRight == true)
+						{
+							break;
+						}
+						else if (InputDevice::GetInstance()->IsKeyDown(DIK_DOWNARROW))
+						{
+							if (direction.x == 1)
+							{
+								position.x = stair->GetPosition().x - 6.0f;
+							}
+							else if (direction.x == -1)
+							{
+								position.x = stair->GetPosition().x - 5.0f;
+							}
+
+							checkOnStairRight = true;
+							checkOnStairLeft = false;
+						}
+					}
+					//======
+					else if (stair->GetType() == STAIR_TYPE_TOP_LEFT)
+					{
+						if (isOnStairLeft == true)
+						{
+							break;
+						}
+						if (InputDevice::GetInstance()->IsKeyDown(DIK_DOWNARROW))
+						{
+							position.x = stair->GetPosition().x;
+							checkOnStairLeft = true;
+							checkOnStairRight = false;
+						}
+					}
+				}
+			}
+		}
+		else
+		{
+			if (isPassingGate)
+			{
+				if (colliableObjects->at(i)->GetTag() == TAG_GATE)
+					continue;
+			}
+			LPCOLLISIONEVENT e = new CollisionEvent(-1, 0, 0, colliableObjects->at(i));
+
+			if (this->vx == 0 && this->vy == 0)
+			{
+				CollisionBox b1 = this->GetBoundingBox();
+
+				CollisionBox b2 = colliableObjects->at(i)->GetBoundingBox();
+
+				if (AABB(b1, b2))
+				{
+					e = new CollisionEvent(0, -(this->direction.x), -(this->direction.y), colliableObjects->at(i));
+				}
+			}
+			else
+			{
+				e = SweptAABBEx(colliableObjects->at(i));
+			}
+
+			if (e->Get_t() >= 0.0f && e->Get_t() < 1.0f)
+				colliableEvents.push_back(e);
+			else
+				delete e;
+		}
+
+	}
+	
+	std::sort(colliableEvents.begin(), colliableEvents.end());
 }

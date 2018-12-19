@@ -22,6 +22,12 @@ protected:
 	float gameTime;
 
 	bool isChangeMap;
+	bool isPassingGate;
+
+	int level;
+
+	float camBoundLeft;
+	float camBoundRight;
 public:
 	Scene();
 	~Scene() {};
@@ -39,7 +45,7 @@ public:
 	virtual void SetChangingStage(bool _isChangeStage) { this->isChangeStage = _isChangeStage; }
 
 	void SetChangingMap(bool isChangeMap) { this->isChangeMap = isChangeMap; }
-
+	void SetPassingGate(bool isPassing) { this->isPassingGate = isPassing; }
 
 	TileMap * GetCurrentMap() { return this->listMap[currentMap]; }
 };

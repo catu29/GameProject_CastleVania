@@ -8,6 +8,8 @@ public:
 	WalkingGhost();
 	~WalkingGhost();
 
+	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
+
 	void Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects);
 	void Render(ViewPort * camera);
 	void SetState(int state);

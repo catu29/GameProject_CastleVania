@@ -41,6 +41,7 @@ public:
 	void SetCellsOffSet(float cellWidth, float cellHeight);
 	void UpdateCells();
 
+	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
 	void HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects);
 	void LoadAnimation();
 };

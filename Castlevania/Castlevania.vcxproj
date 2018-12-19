@@ -138,6 +138,7 @@
     <ClInclude Include="GameIntroScene.h" />
     <ClInclude Include="GameMenuScene.h" />
     <ClInclude Include="GameObject.h" />
+    <ClInclude Include="Gate.h" />
     <ClInclude Include="Graphics.h" />
     <ClInclude Include="Grid.h" />
     <ClInclude Include="Bricks.h" />
@@ -168,6 +169,7 @@
     <ClCompile Include="GameIntroScene.cpp" />
     <ClCompile Include="GameMenuScene.cpp" />
     <ClCompile Include="GameObject.cpp" />
+    <ClCompile Include="Gate.cpp" />
     <ClCompile Include="Graphics.cpp" />
     <ClCompile Include="Grid.cpp" />
     <ClCompile Include="Bricks.cpp" />

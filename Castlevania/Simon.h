@@ -74,10 +74,15 @@ private:
 	bool isSit;
 	bool isUntouchable;
 
+	bool isPassingGate;
+
 	DWORD touchableTime;
 
-	bool onStairRight;
-	bool onStairLeft;
+	bool checkOnStairLeft;
+	bool checkOnStairRight;
+
+	bool isOnStairRight;
+	bool isOnStairLeft;
 
 	bool canControlKeyboard;
 
@@ -102,12 +107,16 @@ public:
 	void HandleMove();
 	void HandleEvent(bool isKeyDown);
 
+	bool IsPassingGate() { return this->isPassingGate; }
+
 	CollisionBox GetBoundingBox();
 
 	void SetInfo(D3DXVECTOR3 _info) { info = _info; }
 	D3DXVECTOR3 GetInfo() { return info; }
 	void SetScore(long) { this->score = score; }
 	long GetScore() { return this->score; }
+
+	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
 
 	void SetControlKB(bool canCtrl) { canControlKeyboard = canCtrl; }
 	bool GetControlKB() { return this->canControlKeyboard; }

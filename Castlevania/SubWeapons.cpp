@@ -116,6 +116,34 @@ void SubWeapons::Update(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 	}
 }
 
+void SubWeapons::CalPotentialCollision(vector<LPGAMEOBJECT>* colliableObjects, vector<LPCOLLISIONEVENT>& colliableEvents)
+{
+	for (UINT i = 0; i < colliableObjects->size(); i++)
+	{
+		if (colliableObjects->at(i)->GetTag() == TAG_ITEM || colliableObjects->at(i)->GetTag() == TAG_STAIR)
+		{
+			continue;
+		}
+		else
+		{
+			CollisionBox b1 = this->GetBoundingBox();
+			CollisionBox b2 = colliableObjects->at(i)->GetBoundingBox();
+
+			if (AABB(b1, b2))
+			{
+				LPCOLLISIONEVENT e = new CollisionEvent(0, -this->direction.x, -this->direction.y, colliableObjects->at(i));
+
+				if (e->Get_t() >= 0.0f && e->Get_t() < 1.0f)
+					colliableEvents.push_back(e);
+				else
+					delete e;
+			}			
+		}
+	}
+
+	std::sort(colliableEvents.begin(), colliableEvents.end());
+}
+
 void SubWeapons::HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects)
 {
 

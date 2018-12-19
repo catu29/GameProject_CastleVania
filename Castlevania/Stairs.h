@@ -7,6 +7,8 @@
 #define STAIR_TYPE_TOP_RIGHT		2	// On top of stairs having shape '/'
 #define STAIR_TYPE_BOTTOM_RIGHT		3	// On bottom of stairs having shape '/'
 
+#define STAIR_TYPE_END_UP			4	// Finish going up-stair
+
 class Stair : public GameObject
 {
 private:

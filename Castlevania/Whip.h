@@ -32,6 +32,7 @@ public:
 	void SetType(int _type) { type = _type; }
 
 	CollisionBox GetBoundingBox();
+	void CalPotentialCollision(vector<LPGAMEOBJECT> *coliableObjects, vector<LPCOLLISIONEVENT> &coliableEvents);
 	void HandleCollision(DWORD dt, vector<LPGAMEOBJECT> *colliableObjects);
 
 	void Render(ViewPort * camera);
